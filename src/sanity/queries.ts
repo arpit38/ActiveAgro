@@ -32,19 +32,6 @@ export interface SanityCategory {
     image?: string;
 }
 
-export interface SanityBlogPost {
-    _id: string;
-    title: string;
-    slug: string;
-    coverImage?: string;
-    excerpt: string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    body: any[];
-    category: string;
-    author: string;
-    publishedAt: string;
-}
-
 // ─── GROQ Queries ────────────────────────────────────────────
 
 const productFields = `
@@ -131,41 +118,3 @@ export async function getAllCategories(): Promise<SanityCategory[]> {
     );
 }
 
-// ─── Blog Queries ────────────────────────────────────────────
-
-export async function getAllBlogPosts(): Promise<SanityBlogPost[]> {
-    return fetchWithRetry(() =>
-        client.fetch(
-            `*[_type == "blogPost"] | order(publishedAt desc) {
-            _id,
-            title,
-            "slug": slug.current,
-            "coverImage": coverImage.asset->url,
-            excerpt,
-            body,
-            category,
-            author,
-            publishedAt
-        }`
-        )
-    );
-}
-
-export async function getBlogPostBySlug(slug: string): Promise<SanityBlogPost | null> {
-    return fetchWithRetry(() =>
-        client.fetch(
-            `*[_type == "blogPost" && slug.current == $slug][0] {
-            _id,
-            title,
-            "slug": slug.current,
-            "coverImage": coverImage.asset->url,
-            excerpt,
-            body,
-            category,
-            author,
-            publishedAt
-        }`,
-            { slug }
-        )
-    );
-}

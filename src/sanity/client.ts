@@ -9,7 +9,10 @@ export const client = createClient({
     projectId,
     dataset,
     apiVersion,
-    useCdn: true,
+    // Use the plain api.sanity.io host instead of apicdn.sanity.io.
+    // Ad blockers / privacy extensions commonly block the "apicdn" host,
+    // which causes client-side queries to fail with a network error.
+    useCdn: false,
 });
 
 // Write client (for seeding / mutations)

@@ -1,0 +1,44 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__code-review-graph__build_or_update_graph_tool",
+      "mcp__code-review-graph__get_architecture_overview_tool",
+      "mcp__code-review-graph__list_communities_tool",
+      "Bash(Remove-Item \"f:\\\\Antigravity Projects\\\\Agro Website\\\\src\\\\sanity\\\\schemas\\\\blogPost.ts\")",
+      "Bash(xargs grep -l \"initialValueTemplateItem\")",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code} | time %{time_total}s\\\\n\" \"https://8m0swnfc.apicdn.sanity.io/v2024-01-01/data/query/production?query=*%5B_type==%22category%22%5D%5B0%5D%7B_id%7D\" --max-time 15)",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code} | time %{time_total}s\\\\n\" \"https://8m0swnfc.api.sanity.io/v2024-01-01/data/query/production?query=*%5B_type==%22category%22%5D%5B0%5D%7B_id%7D\" --max-time 15)",
+      "Bash(git diff *)",
+      "Bash(npx tsc *)",
+      "Bash(echo \"EXIT: $?\")",
+      "Bash(echo \"DONE EXIT: $?\")",
+      "Bash(claude --version)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cat >/dev/null || true; git rev-parse --git-dir >/dev/null 2>&1 && code-review-graph update --skip-flows --repo \"F:/Antigravity Projects/Agro Website\" || true",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cat >/dev/null || true; git rev-parse --git-dir >/dev/null 2>&1 && code-review-graph status --repo \"F:/Antigravity Projects/Agro Website\" || echo 'Not a git repo, skipping'",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

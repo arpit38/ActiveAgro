@@ -48,7 +48,7 @@ export default function Footer() {
                             </div>
                         </Link>
                         <p className="text-sm text-gray-400 leading-relaxed">
-                            Leading the way in sustainable agricultural solutions since 2009.
+                            Leading the way in sustainable agricultural solutions since 2011.
                             We empower farmers with innovative crop protection products.
                         </p>
                         {/* Social Icons */}
@@ -83,6 +83,7 @@ export default function Footer() {
                                 { name: "Home", href: "/" },
                                 { name: "About Us", href: "/about" },
                                 { name: "All Products", href: "/products" },
+                                { name: "Export", href: "/export" },
                                 { name: "Contact Us", href: "/contact" },
                                 { name: "Privacy Policy", href: "#" },
                                 { name: "Terms & Conditions", href: "#" },

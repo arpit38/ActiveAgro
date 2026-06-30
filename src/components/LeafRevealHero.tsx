@@ -301,7 +301,7 @@ export default function LeafRevealHero() {
                     >
                         <span className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 backdrop-blur-sm rounded-full text-sm text-primary border border-primary/20 mb-6">
                             <Leaf className="w-4 h-4" />
-                            Since 2009 — Trusted by 10,000+ Farmers
+                            Since 2011 — Trusted by 10,000+ Farmers
                         </span>
                     </motion.div>
 

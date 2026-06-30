@@ -139,10 +139,10 @@ export default function HomePage() {
               </span>
               <h2 className="text-3xl md:text-4xl font-bold text-text-dark mt-3 leading-tight">
                 Pioneering Crop Protection{" "}
-                <span className="text-primary">Since 2009</span>
+                <span className="text-primary">Since 2011</span>
               </h2>
               <p className="text-text-light mt-5 leading-relaxed">
-                Since 2009, Active Agro Science has been at the forefront of agricultural
+                Since 2011, Active Agro Science has been at the forefront of agricultural
                 innovation, providing farmers with cutting-edge pesticides and fungicides
                 that protect crops while respecting the environment.
               </p>

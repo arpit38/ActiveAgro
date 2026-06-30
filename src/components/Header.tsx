@@ -41,10 +41,16 @@ export default function Header() {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    const navLinks = [
+    const navLinks: {
+        name: string;
+        href: string;
+        hasDropdown?: boolean;
+        external?: boolean;
+    }[] = [
         { name: "Home", href: "/" },
         { name: "About Us", href: "/about" },
         { name: "Products", href: "/products", hasDropdown: true },
+        { name: "Export", href: "/export" },
         { name: "Contact Us", href: "/contact" },
     ];
 
@@ -85,18 +91,29 @@ export default function Header() {
                                     link.hasDropdown && setIsProductsOpen(false)
                                 }
                             >
-                                <Link
-                                    href={link.href}
-                                    className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-text-dark hover:text-primary transition-colors rounded-lg hover:bg-offwhite"
-                                >
-                                    {link.name}
-                                    {link.hasDropdown && (
-                                        <ChevronDown
-                                            className={`w-4 h-4 transition-transform ${isProductsOpen ? "rotate-180" : ""
-                                                }`}
-                                        />
-                                    )}
-                                </Link>
+                                {link.external ? (
+                                    <a
+                                        href={link.href}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-text-dark hover:text-primary transition-colors rounded-lg hover:bg-offwhite"
+                                    >
+                                        {link.name}
+                                    </a>
+                                ) : (
+                                    <Link
+                                        href={link.href}
+                                        className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-text-dark hover:text-primary transition-colors rounded-lg hover:bg-offwhite"
+                                    >
+                                        {link.name}
+                                        {link.hasDropdown && (
+                                            <ChevronDown
+                                                className={`w-4 h-4 transition-transform ${isProductsOpen ? "rotate-180" : ""
+                                                    }`}
+                                            />
+                                        )}
+                                    </Link>
+                                )}
 
                                 {/* Mega Dropdown */}
                                 {link.hasDropdown && (
@@ -354,6 +371,14 @@ export default function Header() {
                                     )}
                                 </AnimatePresence>
                             </div>
+
+                            <Link
+                                href="/export"
+                                className="block px-4 py-3 text-sm font-medium text-text-dark hover:text-primary hover:bg-offwhite rounded-lg transition-colors"
+                                onClick={() => setIsMobileOpen(false)}
+                            >
+                                Export
+                            </Link>
 
                             <Link
                                 href="/contact"

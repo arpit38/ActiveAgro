@@ -93,7 +93,7 @@ export default function GrowthVine() {
     const drawnLength = pathLength * scrollProgress;
 
     return (
-        <div className="fixed inset-0 pointer-events-none z-[1] hidden lg:block overflow-hidden">
+        <div className="fixed top-0 left-0 h-full w-[340px] pointer-events-none z-[1] hidden lg:block overflow-hidden">
             <svg
                 viewBox="0 0 1000 3600"
                 fill="none"
@@ -103,9 +103,9 @@ export default function GrowthVine() {
             >
                 <defs>
                     <linearGradient id="vineGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#5A8F5A" stopOpacity="0.12" />
-                        <stop offset="50%" stopColor="#4A7C59" stopOpacity="0.18" />
-                        <stop offset="100%" stopColor="#3D6B4A" stopOpacity="0.10" />
+                        <stop offset="0%" stopColor="#5A8F5A" stopOpacity="0.275" />
+                        <stop offset="50%" stopColor="#4A7C59" stopOpacity="0.35" />
+                        <stop offset="100%" stopColor="#3D6B4A" stopOpacity="0.25" />
                     </linearGradient>
                     <filter id="vineSoftShadow">
                         <feGaussianBlur stdDeviation="3" result="blur" />
@@ -128,7 +128,7 @@ export default function GrowthVine() {
                     strokeWidth="25"
                     strokeLinecap="round"
                     fill="none"
-                    opacity="0.03"
+                    opacity="0.04"
                     strokeDasharray={pathLength}
                     strokeDashoffset={pathLength - drawnLength}
                     style={{ transition: "stroke-dashoffset 0.12s ease-out" }}
@@ -138,7 +138,7 @@ export default function GrowthVine() {
                 <path
                     d={mainVine}
                     stroke="url(#vineGrad)"
-                    strokeWidth="6"
+                    strokeWidth="8"
                     strokeLinecap="round"
                     fill="none"
                     filter="url(#vineSoftShadow)"
@@ -154,7 +154,7 @@ export default function GrowthVine() {
                     strokeWidth="2"
                     strokeLinecap="round"
                     fill="none"
-                    opacity="0.12"
+                    opacity="0.2"
                     strokeDasharray={pathLength}
                     strokeDashoffset={pathLength - drawnLength}
                     style={{ transition: "stroke-dashoffset 0.12s ease-out" }}
@@ -171,7 +171,7 @@ export default function GrowthVine() {
                             strokeWidth="1.5"
                             strokeLinecap="round"
                             fill="none"
-                            opacity={visible ? 0.18 : 0}
+                            opacity={visible ? 0.25 : 0}
                             style={{ transition: "opacity 0.6s ease-out" }}
                         />
                     );
@@ -190,12 +190,12 @@ export default function GrowthVine() {
                                 transition: "all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1)",
                             }}
                         >
-                            <use href="#leaf" fill="#4A7C59" opacity="0.22" />
+                            <use href="#leaf" fill="#4A7C59" opacity="0.3" />
                             {/* Second leaf */}
                             <use
                                 href="#leaf"
                                 fill="#6B8F3C"
-                                opacity="0.15"
+                                opacity="0.225"
                                 transform={`rotate(${l.side === "left" ? 50 : -50}) scale(0.8)`}
                             />
                             {/* Leaf vein */}
@@ -204,7 +204,7 @@ export default function GrowthVine() {
                                 x2="1" y2="-22"
                                 stroke="#4A7C59"
                                 strokeWidth="0.5"
-                                opacity="0.2"
+                                opacity="0.25"
                             />
                         </g>
                     );
@@ -230,12 +230,12 @@ export default function GrowthVine() {
                                     cx="0" cy="-4"
                                     rx="2" ry="4"
                                     fill={f.color}
-                                    opacity="0.35"
+                                    opacity="0.325"
                                     transform={`rotate(${angle})`}
                                 />
                             ))}
                             {/* Center */}
-                            <circle cx="0" cy="0" r="2" fill="#D4A843" opacity="0.4" />
+                            <circle cx="0" cy="0" r="2" fill="#D4A843" opacity="0.375" />
                         </g>
                     );
                 })}
@@ -250,7 +250,7 @@ export default function GrowthVine() {
                             cy={y}
                             r="2"
                             fill="#6B8F3C"
-                            opacity={visible ? 0.15 : 0}
+                            opacity={visible ? 0.2 : 0}
                             style={{ transition: "opacity 0.4s ease-out" }}
                         />
                     );

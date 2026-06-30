@@ -24,12 +24,12 @@ import {
 import AnimatedSection from "@/components/AnimatedSection";
 import FAQAccordion from "@/components/FAQAccordion";
 import ProductCard from "@/components/ProductCard";
-import ProductEnquiryModal from "@/components/ProductEnquiryModal";
 import {
     getProductBySlug,
     getSuggestedProducts,
     type SanityProduct,
 } from "@/sanity/queries";
+import { getWhatsAppUrl } from "@/lib/whatsapp";
 
 interface PageProps {
     params: Promise<{ slug: string }>;
@@ -41,7 +41,6 @@ export default function ProductDetailPage({ params }: PageProps) {
     const [suggested, setSuggested] = useState<SanityProduct[]>([]);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState("overview");
-    const [isEnquiryOpen, setIsEnquiryOpen] = useState(false);
 
     useEffect(() => {
         async function fetchProduct() {
@@ -197,13 +196,17 @@ export default function ProductDetailPage({ params }: PageProps) {
                             </div>
 
                             <div className="flex flex-wrap gap-3 mt-6">
-                                <button
-                                    onClick={() => setIsEnquiryOpen(true)}
+                                <a
+                                    href={getWhatsAppUrl(
+                                        `Hi, I would like to enquire about ${product.name}.`
+                                    )}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
                                     className="flex items-center gap-2 bg-gradient-to-r from-primary to-primary-light text-white px-7 py-3 rounded-lg font-semibold hover:shadow-lg hover:shadow-primary/25 transition-all hover:-translate-y-0.5"
                                 >
                                     <ShoppingCart className="w-5 h-5" />
                                     Enquire Now
-                                </button>
+                                </a>
                                 <button className="flex items-center gap-2 border-2 border-primary text-primary px-7 py-3 rounded-lg font-semibold hover:bg-primary/5 transition-colors">
                                     <Download className="w-5 h-5" />
                                     Download Brochure
@@ -450,29 +453,28 @@ export default function ProductDetailPage({ params }: PageProps) {
                         Contact our agricultural experts for pricing, bulk orders, and technical guidance.
                     </p>
                     <div className="flex flex-wrap justify-center gap-4 mt-6">
-                        <button
-                            onClick={() => setIsEnquiryOpen(true)}
+                        <a
+                            href={getWhatsAppUrl(
+                                `Hi, I would like to enquire about ${product.name}.`
+                            )}
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="inline-flex items-center gap-2 bg-white text-primary px-8 py-3 rounded-lg font-semibold hover:bg-offwhite transition-all hover:-translate-y-0.5"
                         >
                             Enquire Now
                             <ArrowRight className="w-5 h-5" />
-                        </button>
-                        <Link
-                            href="/contact"
+                        </a>
+                        <a
+                            href={getWhatsAppUrl()}
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="inline-flex items-center gap-2 bg-white/10 text-white px-8 py-3 rounded-lg font-semibold border border-white/30 hover:bg-white/20 transition-all"
                         >
                             Contact Us
-                        </Link>
+                        </a>
                     </div>
                 </div>
             </section>
-
-            {/* Enquiry Modal */}
-            <ProductEnquiryModal
-                isOpen={isEnquiryOpen}
-                onClose={() => setIsEnquiryOpen(false)}
-                productName={product.name}
-            />
         </>
     );
 }
