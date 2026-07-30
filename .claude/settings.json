@@ -12,7 +12,16 @@
       "Bash(npx tsc *)",
       "Bash(echo \"EXIT: $?\")",
       "Bash(echo \"DONE EXIT: $?\")",
-      "Bash(claude --version)"
+      "Bash(claude --version)",
+      "Bash(find . -iname \"*structure*\" -not -path \"*/node_modules/*\")",
+      "Bash(find . -iname \"sanity.config*\" -not -path \"*/node_modules/*\")",
+      "Bash(find . -path \"*/studio/*\" -not -path \"*/node_modules/*\")",
+      "Bash(ls -la .env*)",
+      "Bash(grep -l \"SANITY_API_TOKEN\" .env*)",
+      "Bash(npx tsx *)",
+      "Bash(npx tsx -e ' *)",
+      "Bash(cp \"C:/Users/Arpit/AppData/Local/Temp/claude/f--Antigravity-Projects-Agro-Website/e5dd927f-26ab-4dd3-af8d-8156ae29751e/scratchpad/verify-counts.ts\" ./scripts/_verify-counts-tmp.ts)",
+      "Bash(rm ./scripts/_verify-counts-tmp.ts)"
     ]
   },
   "hooks": {

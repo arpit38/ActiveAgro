@@ -53,6 +53,32 @@ export default defineConfig({
                                     "Manage Categories"
                                 )
                             ),
+                        S.divider(),
+                        // Export page — flat list of exported products, grouped by category
+                        S.listItem()
+                            .title("Export Products")
+                            .id("export-products")
+                            .schemaType("exportProduct")
+                            .child(
+                                S.documentTypeList("exportProduct")
+                                    .title("Export Products")
+                                    .defaultOrdering([
+                                        { field: "category", direction: "asc" },
+                                        { field: "order", direction: "asc" },
+                                    ])
+                            ),
+                        // Bio-Pesticides page — flat list of bio-pesticide products
+                        S.listItem()
+                            .title("Bio-Pesticides")
+                            .id("bio-pesticides")
+                            .schemaType("bioPesticide")
+                            .child(
+                                S.documentTypeList("bioPesticide")
+                                    .title("Bio-Pesticides")
+                                    .defaultOrdering([
+                                        { field: "order", direction: "asc" },
+                                    ])
+                            ),
                     ]);
             },
         }),

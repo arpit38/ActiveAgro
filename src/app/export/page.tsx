@@ -1,18 +1,20 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
     Sprout,
     Bug,
     ShieldCheck,
     Droplets,
-    FlaskConical,
     Globe2,
     Ship,
     Package,
+    BadgeCheck,
 } from "lucide-react";
 import AnimatedSection from "@/components/AnimatedSection";
 import { getWhatsAppUrl } from "@/lib/whatsapp";
+import { getExportProducts, type SanityExportProduct } from "@/sanity/queries";
 
 function WhatsAppIcon({ className }: { className?: string }) {
     return (
@@ -28,131 +30,34 @@ function WhatsAppIcon({ className }: { className?: string }) {
     );
 }
 
-// ─── Export catalogue ─────────────────────────────────────────
-// Listing only — no descriptions, mirrors the printed export sheet.
-const categories: {
-    name: string;
-    icon: typeof Sprout;
-    accent: string; // tailwind text/bg colour token
-    products: string[];
-}[] = [
-    {
-        name: "Herbicides",
-        icon: Sprout,
-        accent: "primary",
-        products: [
-            "2,4-D Amine Salt 58% S.L.",
-            "2,4-D Ethyl Ester 20% W.P. (containing 2,4-D Acid 18% W/W)",
-            "2,4-D Ethyl Ester 38% E.C. (having 2,4-D Acid 34% W/W)",
-            "Atrazine 50% W.P.",
-            "Bispyribac Sodium 10% W/V SC",
-            "Butachlor 50% EC",
-            "Butachlor 50% EW",
-            "Clodinafop-Propargyl 15% WP",
-            "Clodinafop Propargyl 9% + Metribuzin 20% WP",
-            "Glufosinate Ammonium 13.5% W/W SL",
-            "Metribuzin 70% W.P.",
-            "Metsulfuron Methyl 20% W.P.",
-            "Paraquat Dichloride 24% SL",
-            "Pendimethalin 30% EC",
-            "Pendimethalin 38.7% CS",
-            "Pinoxaden 5.1% EC for Indigenous Manufacture",
-            "Pretilachlor 37% W/W EW",
-            "Pretilachlor 50% E.C.",
-            "Pyroxasulfone 85% WG",
-            "Sulfosulfuron 75% + Metsulfuron Methyl 5% WG",
-            "Sulfosulfuron 75% WG",
-            "Tembotrione 34.4% W/W SC",
-            "Metsulfuron Methyl 20% WG",
-        ],
-    },
-    {
-        name: "Fungicides",
-        icon: ShieldCheck,
-        accent: "primary-lighter",
-        products: [
-            "Azoxystrobin 11% + Tebuconazole 18.3% W/W SC",
-            "Azoxystrobin 18.2% W/W + Difenoconazole 11.4% W/W SC for IM",
-            "Azoxystrobin 23% SC for Indigenous Manufacture",
-            "Carbendazim 12% + Mancozeb 63% WP",
-            "Carbendazim 46.27% SC",
-            "Cymoxanil 8% + Mancozeb 64% WP",
-            "Pencycuron 22.9% SC",
-            "Propineb 70% WP",
-            "Sulphur 80% WDG",
-            "Tebuconazole 10% + Sulphur 65% WG",
-            "Tebuconazole 2% DS",
-            "Tebuconazole 25.9% E.C.",
-            "Tebuconazole 50% + Trifloxystrobin 25% WG",
-            "Tebuconazole 6.7% + Captan 26.9% W/W SC",
-            "Thiophanate Methyl 70% WP",
-            "Mancozeb 75% WP",
-            "Captan 70% + Hexaconazole 5% WP",
-        ],
-    },
-    {
-        name: "Insecticides",
-        icon: Bug,
-        accent: "accent",
-        products: [
-            "Acephate 95% SG (W/W)",
-            "Bifenthrin 10% EC W/W",
-            "Bifenthrin 2.5% EC",
-            "Carbofuran 3% C.G.",
-            "Cartap Hydrochloride 4% GR",
-            "Chlorantraniliprole 18.5% W/W SC",
-            "Chlorantraniliprole 8.8% + Thiamethoxam 17.5% SC",
-            "Chlorantraniliprole 9.3% + Lambdacyhalothrin 4.6% ZC",
-            "Chlorpyrifos 50% E.C.",
-            "Chlorpyriphos 1.5% D.P.",
-            "Chlorpyriphos 20% E.C.",
-            "Chlorpyriphos 50% + Cypermethrin 5% EC",
-            "Dinotefuran 15% + Pymetrozine 45% WG",
-            "Dinotefuran 20% W/W SG",
-            "Emamectin Benzoate 1.9% EC",
-            "Fipronil 0.3% G.R.",
-            "Fipronil 0.6% W/W GR",
-            "Flubendiamide 39.35% M/M SC",
-            "Imidacloprid 17.8% SL",
-            "Imidacloprid 30.5% SC",
-            "Novaluron 5.25% + Emamectin Benzoate 0.9% W/W SC",
-            "Novaluron 5.25% + Indoxacarb 4.5% W/W SC",
-            "Pymetrozine 50% WG",
-            "Pyriproxyfen 5% + Diafenthiuron 25% SE",
-            "Thiamethoxam 25% WG",
-            "Thiamethoxam 30% FS",
-            "Thiamethoxam 75% W/W SG",
-            "Emamectin Benzoate 5% SG",
-            "Profenofos 40% + Cypermethrin 4% E.C.",
-        ],
-    },
-    {
-        name: "Plant Growth Regulators",
-        icon: Droplets,
-        accent: "primary-light",
-        products: ["Gibberellic Acid 0.001% L"],
-    },
-    {
-        name: "Self-Manufactured Technical Products",
-        icon: FlaskConical,
-        accent: "primary",
-        products: [
-            "Pretilachlor",
-            "Tebuconazole",
-            "Thiamethoxam",
-            "Chlorantraniliprole",
-            "Pymetrozine",
-            "Metribuzin",
-        ],
-    },
+// ─── Category display metadata ────────────────────────────────
+// Category content itself is managed in Sanity Studio ("Export Products").
+// This just controls icon/order for the fixed set of category labels.
+const categoryMeta: { name: string; icon: typeof Sprout }[] = [
+    { name: "Herbicides", icon: Sprout },
+    { name: "Fungicides", icon: ShieldCheck },
+    { name: "Insecticides", icon: Bug },
+    { name: "Plant Growth Regulators", icon: Droplets },
 ];
 
-const totalProducts = categories.reduce(
-    (sum, cat) => sum + cat.products.length,
-    0
-);
-
 export default function ExportPage() {
+    const [exportProducts, setExportProducts] = useState<SanityExportProduct[]>([]);
+
+    useEffect(() => {
+        getExportProducts()
+            .then(setExportProducts)
+            .catch((err) => console.error("Failed to load export products:", err));
+    }, []);
+
+    const categories = categoryMeta
+        .map((meta) => ({
+            ...meta,
+            products: exportProducts.filter((p) => p.category === meta.name),
+        }))
+        .filter((cat) => cat.products.length > 0);
+
+    const totalProducts = exportProducts.length;
+
     return (
         <>
             {/* ─── HERO ─────────────────────────────────────────────── */}
@@ -203,6 +108,30 @@ export default function ExportPage() {
                             <WhatsAppIcon className="w-5 h-5" />
                             Enquire on WhatsApp
                         </a>
+                    </motion.div>
+
+                    {/* International Registration */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8, delay: 0.4 }}
+                        className="mt-14 max-w-3xl mx-auto"
+                    >
+                        <div className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-8 sm:p-10 text-center">
+                            <div className="w-14 h-14 mx-auto rounded-2xl bg-white/15 flex items-center justify-center mb-4">
+                                <BadgeCheck className="w-7 h-7 text-white" />
+                            </div>
+                            <h2 className="text-xl md:text-2xl font-bold text-white">
+                                International Registration
+                            </h2>
+                            <p className="text-white/80 mt-3 leading-relaxed max-w-2xl mx-auto">
+                                Registration of agrochemicals in the Middle East (Oman,
+                                Saudi Arabia, Iran, Ethiopia, Yemen, Jordan), African
+                                countries (Egypt, Sudan, Kenya, Morocco, Uganda, Tanzania,
+                                Zambia, etc.), Asia (Pakistan, Bangladesh, China), Europe
+                                and more.
+                            </p>
+                        </div>
                     </motion.div>
                 </div>
             </section>
@@ -288,12 +217,12 @@ export default function ExportPage() {
                                         <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-8 px-6 sm:px-8 py-6">
                                             {cat.products.map((product) => (
                                                 <li
-                                                    key={product}
+                                                    key={product._id}
                                                     className="flex items-start gap-3 py-2.5 border-b border-gray-100/80 last:border-0 md:[&:nth-last-child(2)]:border-0"
                                                 >
                                                     <span className="mt-2 w-1.5 h-1.5 rounded-full bg-primary-lighter flex-shrink-0" />
                                                     <span className="text-sm text-text-dark leading-relaxed">
-                                                        {product}
+                                                        {product.name}
                                                     </span>
                                                 </li>
                                             ))}

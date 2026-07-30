@@ -40,7 +40,7 @@ export default function FloatingParticles() {
                 vx: (Math.random() - 0.5) * 0.3,
                 vy: (Math.random() - 0.5) * 0.2 - 0.1,
                 size: Math.random() * 2.5 + 0.8,
-                opacity: Math.random() * 0.3 + 0.1,
+                opacity: Math.random() * 0.15 + 0.05,
                 color: colors[Math.floor(Math.random() * colors.length)],
                 phase: Math.random() * Math.PI * 2,
             });
@@ -108,7 +108,7 @@ export default function FloatingParticles() {
                 if (p.y > h + 10) p.y = -10;
 
                 // Pulsing opacity
-                const pulseOpacity = p.opacity + Math.sin(time * 1.5 + p.phase) * 0.05;
+                const pulseOpacity = p.opacity + Math.sin(time * 1.5 + p.phase) * 0.025;
 
                 // Draw soft glow
                 const gradient = ctx.createRadialGradient(
@@ -123,7 +123,7 @@ export default function FloatingParticles() {
                 ctx.fill();
 
                 // Draw core dot
-                ctx.fillStyle = `${p.color} ${pulseOpacity + 0.1})`;
+                ctx.fillStyle = `${p.color} ${pulseOpacity + 0.05})`;
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
                 ctx.fill();

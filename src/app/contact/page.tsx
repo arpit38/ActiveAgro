@@ -69,9 +69,9 @@ export default function ContactPage() {
                                     <h3 className="font-semibold text-text-dark text-sm">Address</h3>
                                     <p className="text-sm text-text-light mt-1 leading-relaxed">
                                         Active Agro Science<br />
-                                        3, Purba Panchanan Gram, Topsia<br />
-                                        South 24 Parganas<br />
-                                        West Bengal - 700100, India
+                                        68B, E.M. Bypass Road<br />
+                                        Kolkata - 700100<br />
+                                        West Bengal, India
                                     </p>
                                 </div>
                             </div>
@@ -98,10 +98,10 @@ export default function ContactPage() {
                                 <div>
                                     <h3 className="font-semibold text-text-dark text-sm">Email</h3>
                                     <a
-                                        href="mailto:info@activeagroscience.com"
+                                        href="mailto:activeagroscience462@gmail.com"
                                         className="text-sm text-text-light hover:text-primary transition-colors"
                                     >
-                                        info@activeagroscience.com
+                                        activeagroscience462@gmail.com
                                     </a>
                                 </div>
                             </div>

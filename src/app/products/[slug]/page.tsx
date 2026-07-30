@@ -11,7 +11,6 @@ import {
     Droplets,
     Target,
     Leaf,
-    Download,
     ShoppingCart,
     CheckCircle2,
     FlaskRound,
@@ -126,7 +125,9 @@ export default function ProductDetailPage({ params }: PageProps) {
                     <div className="grid lg:grid-cols-2 gap-12 items-start">
                         {/* Product Image */}
                         <AnimatedSection direction="left">
-                            <div className="relative bg-gradient-to-br from-offwhite to-primary/5 rounded-2xl aspect-square flex items-center justify-center overflow-hidden">
+                            {/* bg matches the off-white baked into the product photos so the
+                                image edges blend seamlessly into the frame */}
+                            <div className="relative rounded-2xl aspect-square flex items-center justify-center overflow-hidden bg-[#FBF9F7]">
                                 {product.image ? (
                                     <Image
                                         src={product.image}
@@ -195,22 +196,18 @@ export default function ProductDetailPage({ params }: PageProps) {
                                 </div>
                             </div>
 
-                            <div className="flex flex-wrap gap-3 mt-6">
+                            <div className="mt-6">
                                 <a
                                     href={getWhatsAppUrl(
                                         `Hi, I would like to enquire about ${product.name}.`
                                     )}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="flex items-center gap-2 bg-gradient-to-r from-primary to-primary-light text-white px-7 py-3 rounded-lg font-semibold hover:shadow-lg hover:shadow-primary/25 transition-all hover:-translate-y-0.5"
+                                    className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-primary to-primary-light text-white px-7 py-3 rounded-lg font-semibold hover:shadow-lg hover:shadow-primary/25 transition-all hover:-translate-y-0.5"
                                 >
                                     <ShoppingCart className="w-5 h-5" />
                                     Enquire Now
                                 </a>
-                                <button className="flex items-center gap-2 border-2 border-primary text-primary px-7 py-3 rounded-lg font-semibold hover:bg-primary/5 transition-colors">
-                                    <Download className="w-5 h-5" />
-                                    Download Brochure
-                                </button>
                             </div>
 
                             <p className="text-sm text-text-light mt-6 leading-relaxed">

@@ -32,6 +32,19 @@ export interface SanityCategory {
     image?: string;
 }
 
+export interface SanityExportProduct {
+    _id: string;
+    name: string;
+    category: string;
+    order?: number;
+}
+
+export interface SanityBioPesticide {
+    _id: string;
+    name: string;
+    order?: number;
+}
+
 // ─── GROQ Queries ────────────────────────────────────────────
 
 const productFields = `
@@ -113,6 +126,35 @@ export async function getAllCategories(): Promise<SanityCategory[]> {
             "slug": slug.current,
             description,
             "image": image.asset->url
+        }`
+        )
+    );
+}
+
+// ─── Export Product Queries ──────────────────────────────────
+
+export async function getExportProducts(): Promise<SanityExportProduct[]> {
+    return fetchWithRetry(() =>
+        client.fetch(
+            `*[_type == "exportProduct"] | order(order asc, name asc) {
+            _id,
+            name,
+            category,
+            order
+        }`
+        )
+    );
+}
+
+// ─── Bio-Pesticide Queries ────────────────────────────────────
+
+export async function getBioPesticides(): Promise<SanityBioPesticide[]> {
+    return fetchWithRetry(() =>
+        client.fetch(
+            `*[_type == "bioPesticide"] | order(order asc, name asc) {
+            _id,
+            name,
+            order
         }`
         )
     );

@@ -21,6 +21,7 @@ import {
 
 export default function Header() {
     const [isScrolled, setIsScrolled] = useState(false);
+    const [isAtBottom, setIsAtBottom] = useState(false);
     const [isMobileOpen, setIsMobileOpen] = useState(false);
     const [isProductsOpen, setIsProductsOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -31,14 +32,31 @@ export default function Header() {
     const [products, setProducts] = useState<SanityProduct[]>([]);
 
     useEffect(() => {
-        getAllCategories().then(setCategories);
-        getAllProducts().then(setProducts);
+        getAllCategories()
+            .then(setCategories)
+            .catch((err) => console.error("Failed to load categories:", err));
+        getAllProducts()
+            .then(setProducts)
+            .catch((err) => console.error("Failed to load products:", err));
     }, []);
 
     useEffect(() => {
-        const handleScroll = () => setIsScrolled(window.scrollY > 20);
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > 20);
+            // True once the page is scrolled (almost) all the way down, so the
+            // fixed header sits over the dark footer and needs a light shadow.
+            const reachedBottom =
+                window.innerHeight + window.scrollY >=
+                document.documentElement.scrollHeight - 4;
+            setIsAtBottom(reachedBottom);
+        };
+        handleScroll();
         window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
+        window.addEventListener("resize", handleScroll);
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+            window.removeEventListener("resize", handleScroll);
+        };
     }, []);
 
     const navLinks: {
@@ -50,6 +68,7 @@ export default function Header() {
         { name: "Home", href: "/" },
         { name: "About Us", href: "/about" },
         { name: "Products", href: "/products", hasDropdown: true },
+        { name: "Bio-Pesticides", href: "/bio-pesticides" },
         { name: "Export", href: "/export" },
         { name: "Contact Us", href: "/contact" },
     ];
@@ -57,8 +76,13 @@ export default function Header() {
     return (
         <header
             className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
-                ? "bg-white shadow-lg py-2"
+                ? "bg-white py-2"
                 : "bg-white/90 backdrop-blur-md py-4"
+                } ${isAtBottom
+                    ? "shadow-[0_6px_24px_-2px_rgba(255,255,255,0.45)]"
+                    : isScrolled
+                        ? "shadow-lg"
+                        : ""
                 }`}
         >
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -168,7 +192,7 @@ export default function Header() {
                                                 {/* Right: Products for hovered category */}
                                                 <div className="flex-1 p-3 max-h-[400px] overflow-y-auto">
                                                     <p className="text-xs font-semibold text-text-light uppercase tracking-wider mb-2 px-2">
-                                                        {categories.find(c => c.slug === (hoveredCategory || categories[0].slug))?.name}
+                                                        {categories.find(c => c.slug === (hoveredCategory || categories[0]?.slug))?.name}
                                                     </p>
                                                     <div className="space-y-0.5">
                                                         {products.filter(p => p.categorySlug === (hoveredCategory || categories[0]?.slug)).map((product) => (
@@ -371,6 +395,14 @@ export default function Header() {
                                     )}
                                 </AnimatePresence>
                             </div>
+
+                            <Link
+                                href="/bio-pesticides"
+                                className="block px-4 py-3 text-sm font-medium text-text-dark hover:text-primary hover:bg-offwhite rounded-lg transition-colors"
+                                onClick={() => setIsMobileOpen(false)}
+                            >
+                                Bio-Pesticides
+                            </Link>
 
                             <Link
                                 href="/export"

@@ -61,6 +61,7 @@ export default function GrowthVine() {
 
     // Leaf shapes along the vine — realistic pointed leaves
     const leaves = [
+        { x: 520, y: 60, rot: 30, scale: 0.8, threshold: 0.02, side: "right" },
         { x: 435, y: 210, rot: -30, scale: 1.0, threshold: 0.07, side: "left" },
         { x: 548, y: 408, rot: 25, scale: 0.9, threshold: 0.13, side: "right" },
         { x: 448, y: 605, rot: -20, scale: 1.1, threshold: 0.19, side: "left" },
@@ -73,7 +74,9 @@ export default function GrowthVine() {
         { x: 558, y: 2008, rot: 25, scale: 0.9, threshold: 0.61, side: "right" },
         { x: 430, y: 2208, rot: -20, scale: 1.0, threshold: 0.67, side: "left" },
         { x: 555, y: 2408, rot: 30, scale: 1.1, threshold: 0.73, side: "right" },
+        { x: 460, y: 2608, rot: -25, scale: 0.9, threshold: 0.78, side: "left" },
         { x: 445, y: 2808, rot: -25, scale: 0.85, threshold: 0.83, side: "left" },
+        { x: 545, y: 3008, rot: 30, scale: 0.95, threshold: 0.87, side: "right" },
         { x: 558, y: 3208, rot: 20, scale: 1.0, threshold: 0.91, side: "right" },
     ];
 
@@ -190,21 +193,21 @@ export default function GrowthVine() {
                                 transition: "all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1)",
                             }}
                         >
-                            <use href="#leaf" fill="#4A7C59" opacity="0.3" />
+                            <use href="#leaf" fill="#4A7C59" opacity="0.8" />
                             {/* Second leaf */}
                             <use
                                 href="#leaf"
                                 fill="#6B8F3C"
-                                opacity="0.225"
+                                opacity="0.6"
                                 transform={`rotate(${l.side === "left" ? 50 : -50}) scale(0.8)`}
                             />
                             {/* Leaf vein */}
                             <line
                                 x1="0" y1="0"
                                 x2="1" y2="-22"
-                                stroke="#4A7C59"
+                                stroke="#3D6B4A"
                                 strokeWidth="0.5"
-                                opacity="0.25"
+                                opacity="0.55"
                             />
                         </g>
                     );

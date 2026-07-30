@@ -21,7 +21,9 @@ export default function Footer() {
     const [categories, setCategories] = useState<SanityCategory[]>([]);
 
     useEffect(() => {
-        getAllCategories().then(setCategories);
+        getAllCategories()
+            .then(setCategories)
+            .catch((err) => console.error("Failed to load categories:", err));
     }, []);
     const scrollToTop = () => {
         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -83,6 +85,7 @@ export default function Footer() {
                                 { name: "Home", href: "/" },
                                 { name: "About Us", href: "/about" },
                                 { name: "All Products", href: "/products" },
+                                { name: "Bio-Pesticides", href: "/bio-pesticides" },
                                 { name: "Export", href: "/export" },
                                 { name: "Contact Us", href: "/contact" },
                                 { name: "Privacy Policy", href: "#" },
@@ -128,8 +131,8 @@ export default function Footer() {
                             <li className="flex gap-3">
                                 <MapPin className="w-5 h-5 text-primary-lighter flex-shrink-0 mt-0.5" />
                                 <span className="text-sm text-gray-400">
-                                    3, Purba Panchanan Gram, Topsia, South 24 Parganas,
-                                    West Bengal - 700100
+                                    68B, E.M. Bypass Road, Kolkata - 700100,
+                                    West Bengal, India
                                 </span>
                             </li>
                             <li className="flex gap-3">
@@ -144,10 +147,10 @@ export default function Footer() {
                             <li className="flex gap-3">
                                 <Mail className="w-5 h-5 text-primary-lighter flex-shrink-0" />
                                 <a
-                                    href="mailto:info@activeagroscience.com"
+                                    href="mailto:activeagroscience462@gmail.com"
                                     className="text-sm text-gray-400 hover:text-primary-lighter transition-colors"
                                 >
-                                    info@activeagroscience.com
+                                    activeagroscience462@gmail.com
                                 </a>
                             </li>
                         </ul>
