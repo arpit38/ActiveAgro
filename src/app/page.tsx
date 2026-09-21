@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
@@ -34,7 +34,10 @@ import { getFeaturedProducts, type SanityProduct } from "@/sanity/queries";
 export default function HomePage() {
   const [featuredProducts, setFeaturedProducts] = useState<SanityProduct[]>([]);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [maxSlide, setMaxSlide] = useState(0);
+  const [perView, setPerView] = useState(1);
   const [isPaused, setIsPaused] = useState(false);
+  const carouselRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     getFeaturedProducts()
@@ -42,22 +45,88 @@ export default function HomePage() {
       .catch((err) => console.error("Failed to load featured products:", err));
   }, []);
 
-  const slidesPerView = 3;
-  const maxSlide = Math.max(0, featuredProducts.length - slidesPerView);
+  // Width of one card plus the flex gap — the distance of a single slide step.
+  // Measured from the DOM so it stays correct across the responsive card widths.
+  const getStep = useCallback(() => {
+    const el = carouselRef.current;
+    const first = el?.firstElementChild as HTMLElement | null;
+    if (!el || !first) return 0;
+    const gap = parseFloat(getComputedStyle(el).columnGap) || 0;
+    return first.offsetWidth + gap;
+  }, []);
 
-  const nextSlide = useCallback(() => {
-    setCurrentSlide((prev) => (prev >= maxSlide ? 0 : prev + 1));
-  }, [maxSlide]);
+  // How many cards fit at the current breakpoint decides how far the track can go.
+  useEffect(() => {
+    const el = carouselRef.current;
+    if (!el) return;
+    const measure = () => {
+      const step = getStep();
+      if (!step) return;
+      const fits = Math.max(1, Math.round(el.clientWidth / step));
+      setPerView(fits);
+      setMaxSlide(Math.max(0, featuredProducts.length - fits));
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [featuredProducts.length, getStep]);
 
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev <= 0 ? maxSlide : prev - 1));
-  };
+  // Scroll position is the single source of truth, so native swipes, the arrows
+  // and autoplay all stay in sync with the dots.
+  const handleCarouselScroll = useCallback(() => {
+    const el = carouselRef.current;
+    const step = getStep();
+    if (!el || !step) return;
+    setCurrentSlide(Math.round(el.scrollLeft / step));
+  }, [getStep]);
+
+  const scrollToSlide = useCallback(
+    (index: number) => {
+      const el = carouselRef.current;
+      const step = getStep();
+      if (!el || !step) return;
+      el.scrollTo({ left: index * step, behavior: "smooth" });
+    },
+    [getStep]
+  );
+
+  // Arrows, dots and autoplay all move a full page (one screenful of cards) —
+  // with 20 featured products, per-card steps would make the indicator crawl.
+  const pageCount = Math.max(1, Math.ceil(featuredProducts.length / perView));
+  // The last page is short whenever the count isn't a clean multiple of perView,
+  // so hitting the end of the track counts as being on the final page.
+  const activePage =
+    currentSlide >= maxSlide ? pageCount - 1 : Math.floor(currentSlide / perView);
+
+  const goToPage = useCallback(
+    (page: number) => {
+      const wrapped = ((page % pageCount) + pageCount) % pageCount;
+      scrollToSlide(Math.min(wrapped * perView, maxSlide));
+    },
+    [pageCount, perView, maxSlide, scrollToSlide]
+  );
+
+  const nextSlide = useCallback(() => goToPage(activePage + 1), [goToPage, activePage]);
+  const prevSlide = useCallback(() => goToPage(activePage - 1), [goToPage, activePage]);
 
   useEffect(() => {
-    if (isPaused) return;
-    const interval = setInterval(nextSlide, 4000);
+    if (isPaused || maxSlide <= 0) return;
+    const interval = setInterval(() => {
+      const el = carouselRef.current;
+      const step = getStep();
+      if (!el || !step) return;
+      const current = Math.round(el.scrollLeft / step);
+      const page =
+        current >= maxSlide ? pageCount - 1 : Math.floor(current / perView);
+      const next = page + 1 >= pageCount ? 0 : page + 1;
+      el.scrollTo({
+        left: Math.min(next * perView, maxSlide) * step,
+        behavior: "smooth",
+      });
+    }, 4000);
     return () => clearInterval(interval);
-  }, [isPaused, nextSlide]);
+  }, [isPaused, maxSlide, perView, pageCount, getStep]);
 
   const certifications = [
     "ISO 9001:2015",
@@ -184,56 +253,73 @@ export default function HomePage() {
             className="relative"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
+            onTouchStart={() => setIsPaused(true)}
+            onTouchEnd={() => setIsPaused(false)}
           >
-            {/* Carousel */}
-            <div className="overflow-hidden">
-              <div
-                className="flex transition-transform duration-500 ease-out"
-                style={{
-                  transform: `translateX(-${currentSlide * (100 / slidesPerView)}%)`,
-                }}
-              >
-                {featuredProducts.map((product, index) => (
-                  <div
-                    key={product.slug}
-                    className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 px-3"
-                  >
-                    <ProductCard product={product} index={index} />
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Controls */}
-            <button
-              onClick={prevSlide}
-              className="absolute -left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-primary hover:text-white transition-colors z-10"
-              aria-label="Previous slide"
+            {/* Carousel — native horizontal scrolling, so touch swipe and
+                trackpad gestures work without a gesture library */}
+            <div
+              ref={carouselRef}
+              onScroll={handleCarouselScroll}
+              role="region"
+              aria-label="Featured products"
+              className="flex gap-6 overflow-x-auto overscroll-x-contain snap-x snap-mandatory scrollbar-hide pb-2"
             >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <button
-              onClick={nextSlide}
-              className="absolute -right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-primary hover:text-white transition-colors z-10"
-              aria-label="Next slide"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
-
-            {/* Dots */}
-            <div className="flex justify-center gap-2 mt-8">
-              {Array.from({ length: maxSlide + 1 }).map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setCurrentSlide(i)}
-                  className={`w-2.5 h-2.5 rounded-full transition-all ${currentSlide === i
-                    ? "bg-primary w-7"
-                    : "bg-gray-300 hover:bg-gray-400"
-                    }`}
-                  aria-label={`Go to slide ${i + 1}`}
-                />
+              {featuredProducts.map((product, index) => (
+                <div
+                  key={product.slug}
+                  className="snap-start shrink-0 basis-[86%] sm:basis-[calc(50%-0.75rem)] lg:basis-[calc(33.333%-1rem)]"
+                >
+                  <ProductCard product={product} index={index % 3} />
+                </div>
               ))}
             </div>
+
+            {/* Controls — desktop only; on touch devices the swipe is the control */}
+            {maxSlide > 0 && (
+              <>
+                <button
+                  onClick={prevSlide}
+                  className="hidden sm:flex absolute -left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-lg items-center justify-center hover:bg-primary hover:text-white transition-colors z-10"
+                  aria-label="Previous slide"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={nextSlide}
+                  className="hidden sm:flex absolute -right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-lg items-center justify-center hover:bg-primary hover:text-white transition-colors z-10"
+                  aria-label="Next slide"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </>
+            )}
+
+            {/* Page indicator — dots while they stay readable, otherwise a
+                progress bar (mobile shows one card per page, so 20 dots) */}
+            {maxSlide > 0 &&
+              (pageCount <= 8 ? (
+                <div className="flex justify-center gap-2 mt-8">
+                  {Array.from({ length: pageCount }).map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => goToPage(i)}
+                      className={`h-2.5 rounded-full transition-all ${activePage === i
+                        ? "bg-primary w-7"
+                        : "bg-gray-300 hover:bg-gray-400 w-2.5"
+                        }`}
+                      aria-label={`Go to slide ${i + 1}`}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="mt-8 mx-auto h-1 w-40 rounded-full bg-gray-200 overflow-hidden">
+                  <div
+                    className="h-full bg-primary rounded-full transition-all duration-300"
+                    style={{ width: `${((activePage + 1) / pageCount) * 100}%` }}
+                  />
+                </div>
+              ))}
           </div>
 
           <div className="text-center mt-10">

@@ -98,10 +98,12 @@ export async function getProductsByCategory(categorySlug: string): Promise<Sanit
     );
 }
 
+// Featured = every product that has a product image uploaded in the Studio.
+// Adding an image to a product is what puts it on the home page carousel.
 export async function getFeaturedProducts(): Promise<SanityProduct[]> {
     return fetchWithRetry(() =>
         client.fetch(
-            `*[_type == "product" && isFeatured == true] { ${productFields} }`
+            `*[_type == "product" && defined(image.asset)] | order(name asc) { ${productFields} }`
         )
     );
 }
