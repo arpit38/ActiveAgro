@@ -62,12 +62,12 @@ export default function AboutPage() {
         {
             name: "Afreen Firdous",
             role: "CEO",
-            image: "/images/CEO.jpeg",
+            image: "/images/CEO_headshot.jpeg",
         },
         {
             name: "MD Babu Molla",
             role: "Business Head",
-            image: "/images/Business_Head.jpeg",
+            image: "/images/Business_Head_headshot.jpeg",
         },
     ];
 
@@ -405,30 +405,28 @@ export default function AboutPage() {
                         </h2>
                     </AnimatedSection>
 
-                    <div className="grid sm:grid-cols-2 gap-8 max-w-3xl mx-auto">
+                    <div className="grid sm:grid-cols-2 gap-8 max-w-xl mx-auto">
                         {team.map((member, index) => (
                             <AnimatedSection key={member.name} delay={index * 0.08}>
                                 <motion.div
                                     whileHover={{ y: -5 }}
-                                    className="h-full bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-xl transition-all"
+                                    className="h-full bg-white rounded-2xl border border-gray-100 p-8 text-center hover:shadow-xl transition-all"
                                 >
-                                    <div className="relative aspect-[3/4] bg-gradient-to-br from-primary/10 to-primary-lighter/10">
+                                    <div className="relative mx-auto w-[150px] aspect-[35/45] rounded-xl overflow-hidden ring-1 ring-gray-200 shadow-md bg-gradient-to-br from-primary/10 to-primary-lighter/10">
                                         <Image
                                             src={member.image}
                                             alt={member.name}
                                             fill
-                                            sizes="(max-width: 640px) 100vw, 384px"
-                                            className="object-cover object-top"
+                                            sizes="150px"
+                                            className="object-cover object-center"
                                         />
                                     </div>
-                                    <div className="p-6 text-center">
-                                        <h3 className="text-lg font-bold text-text-dark">
-                                            {member.name}
-                                        </h3>
-                                        <p className="text-sm font-medium text-primary mt-0.5">
-                                            {member.role}
-                                        </p>
-                                    </div>
+                                    <h3 className="text-lg font-bold text-text-dark mt-5">
+                                        {member.name}
+                                    </h3>
+                                    <p className="text-sm font-medium text-primary mt-0.5">
+                                        {member.role}
+                                    </p>
                                 </motion.div>
                             </AnimatedSection>
                         ))}
