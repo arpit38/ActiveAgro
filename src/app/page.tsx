@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -192,10 +193,16 @@ export default function HomePage() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <AnimatedSection direction="left">
               <div className="relative">
-                <div className="w-full h-80 bg-gradient-to-br from-offwhite to-primary/5 rounded-2xl overflow-hidden flex items-center justify-center">
-                  <div className="w-40 h-40 rounded-full bg-gradient-to-br from-primary/15 to-primary-lighter/15 flex items-center justify-center">
-                    <Leaf className="w-20 h-20 text-primary/30" />
-                  </div>
+                <div className="relative w-full h-80 bg-gradient-to-br from-offwhite to-primary/5 rounded-2xl overflow-hidden">
+                  {/* object-top keeps the farmer's head in frame — the tile is
+                      wider than the photo, so the crop comes off the bottom */}
+                  <Image
+                    src="/farmer.png"
+                    alt="Farmer in a paddy field holding a bottle of Active Emida insecticide"
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    className="object-cover object-top"
+                  />
                 </div>
                 <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-primary/10 rounded-2xl -z-10" />
                 <div className="absolute -top-4 -left-4 w-24 h-24 bg-accent/10 rounded-2xl -z-10" />
