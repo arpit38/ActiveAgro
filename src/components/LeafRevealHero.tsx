@@ -311,7 +311,7 @@ export default function LeafRevealHero() {
                         transition={{ duration: 0.8, delay: 1.1 }}
                         className="text-4xl sm:text-5xl lg:text-6xl font-bold text-text-dark leading-tight"
                     >
-                        Nurturing Growth,
+                        Nurturing Growth
                         <br />
                         <span className="text-primary">Protecting Harvests</span>
                     </motion.h1>
